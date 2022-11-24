@@ -28,5 +28,6 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::apiResource('products',ProductApiController::class);
     Route::apiResource('photos',PhotoApiController::class);
     Route::post('/logout',[ApiAuthController::class,'logout'])->name('api.logout');
+    Route::post('/logoutAll',[ApiAuthController::class,'logoutAll'])->name('api.logout-all');
     Route::get('/tokens',[ApiAuthController::class,'tokens'])->name('api.tokens');
 });

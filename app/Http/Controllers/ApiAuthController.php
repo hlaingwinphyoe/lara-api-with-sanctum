@@ -13,7 +13,7 @@ class ApiAuthController extends Controller
         $request->validate([
             'name'=>'required|min:3',
             'email'=>'required|email|unique:users',
-            'password'=>'required|confirmed|min:3'
+            'password'=>'required|confirmed|min:8'
         ]);
 
         $user = User::create([
@@ -26,20 +26,36 @@ class ApiAuthController extends Controller
             $token = Auth::user()->createToken('phone')->plainTextToken;
             return response()->json($token);
         }
-        return response()->json(['message'=>"User Not Found."],403);
+        return response()->json(['message'=>"User Not Found."],401);
 
     }
 
-    public function login(){
+    public function login(Request $request){
+        $request->validate([
+            'email'=>'required|email',
+            'password'=>'required|min:8'
+        ]);
+
+        if (Auth::attempt($request->only(['email','password']))){
+            $token = Auth::user()->createToken('phone')->plainTextToken;
+            return response()->json($token);
+        }
+        return response()->json(['message'=>"User Not Found."],401);
 
     }
 
     public function logout(){
+        Auth::user()->currentAccessToken()->delete();
+        return response()->json(['You logout.'],204);
+    }
 
+    public function logoutAll(){
+        Auth::user()->tokens()->delete();
+        return response()->json(['You logout.'],204);
     }
 
     public function tokens(){
-
+        return Auth::user()->tokens;
     }
 
 }
