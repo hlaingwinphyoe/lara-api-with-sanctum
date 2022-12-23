@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ProductResource;
 use App\Models\Photo;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -17,7 +18,8 @@ class ProductApiController extends Controller
     public function index()
     {
         $products = Product::latest('id')->paginate(10);
-        return response()->json($products);
+//        return response()->json($products);
+        return ProductResource::collection($products);
     }
 
     /**
@@ -33,7 +35,7 @@ class ProductApiController extends Controller
            'price'=> 'required|numeric|min:1',
            'stock'=>'required|numeric|min:1',
             "photos"=>"required",
-            "photos.*" =>"file|mimes:jpeg,png|max:512"
+            "photos.*" =>"file|mimes:jpeg,png|max:1024"
         ]);
 
         $product = Product::create([
